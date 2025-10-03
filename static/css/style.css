@@ -1,0 +1,458 @@
+:root {
+  --primary-color: #e2bba9;
+  --secondary-color: #ffffff;
+  --text-color: #5c4b4b;
+  --heading-color: #5c4b4b;
+}
+
+/* Mengatur scroll halus untuk tautan anchor */
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  color: var(--text-color);
+  background-color: var(--secondary-color);
+  line-height: 1.6;
+  padding-top: 80px; /* Sesuaikan dengan tinggi navbar */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Nav Bootstrap */
+.navbar {
+  background-color: #ca8e83 !important; /* Use !important to override Bootstrap styles */
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: top 0.3s; /* Smooth transition effect */
+}
+
+.navbar-nav {
+  margin-right: 100px; /* Pushes the text to the left */
+}
+
+.navbar-brand img {
+  width: 200px; /* Adjust the width as needed */
+  height: auto; /* Maintain aspect ratio */
+  margin-left: 30px;
+}
+
+.navbar-nav .nav-link {
+  color: #ddd3d3; /* Replace with your desired text color */
+  margin: 20px;
+  padding-right: 10px; /* Adjust spacing between links */
+}
+
+.navbar-nav .nav-link:hover {
+  color: #ca8e83; /* Replace with your desired hover color */
+  background-color: #f0e0d8;
+  border-radius: 5px;
+}
+
+/* About & Problem */
+.problems {
+  background-color: #f7f3f1;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  box-shadow: 2px 6px 8px 0 rgba(22, 22, 26, 0.18);
+  margin: 0 auto !important;
+}
+
+/* Card lebih besar */
+.problems .card {
+  width: 320px !important; /* lebar card lebih besar */
+  min-height: 420px !important; /* tinggi minimal lebih tinggi */
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto !important;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Gambar card lebih proporsional */
+.problems .card img {
+  height: 200px !important; /* gambar sedikit lebih tinggi */
+  object-fit: cover;
+  border-radius: 12px 12px 0 0;
+  flex-shrink: 0;
+}
+
+/* Bagian teks lebih lega */
+.problems .card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 18px;
+  text-align: center;
+  font-size: 16px; /* sedikit lebih besar untuk keterbacaan */
+  line-height: 1.5;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.problems .card-body p {
+  overflow: visible !important;
+  text-overflow: unset !important;
+  white-space: normal !important;
+}
+
+.problems .swiper-slide {
+  margin-right: 0 !important;
+  display: flex;
+  justify-content: center;
+}
+
+.problems .carousel-inner {
+  display: flex;
+  justify-content: center; /* Bikin konten rata tengah */
+}
+
+.problems .carousel-item {
+  display: flex;
+  justify-content: center; /* Pastikan card selalu di tengah */
+}
+
+.card-slider .card {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+}
+
+.card-slider {
+  cursor: grab;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #d39f9f; /* Menggunakan warna teks utama Anda */
+}
+
+.hero {
+  background-color: var(--primary-color);
+  padding: 60px 0;
+  text-align: center;
+}
+
+.hero-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap; /* biar mobile stack */
+  gap: 40px; /* jarak antar kolom */
+}
+
+.hero-text {
+  max-width: 500px;
+  text-align: left;
+  margin-right: 30px;
+  flex: 1 1 400px; /* biar responsif */
+  text-align: left;
+}
+
+.hero-text h1 {
+  font-family: "Playfair Display", serif;
+  font-size: 48px;
+  color: var(--heading-color);
+  margin-bottom: 20px;
+}
+
+.hero-text p {
+  margin-bottom: 30px;
+}
+
+.hero-image {
+  max-width: 400px;
+  flex: 1 1 300px; /* biar responsif */
+  max-width: 400px;
+}
+
+.hero-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+}
+
+/* BUTTON UPLOAD*/
+.upload-btn {
+  display: inline-block;
+  padding: 12px 25px;
+  background: #ca8e83;
+  color: white;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upload-btn:hover {
+  background: #a86b63;
+  transform: scale(1.05);
+}
+
+.analyze-btn {
+  margin-left: 15px;
+  padding: 12px 25px;
+  background: #5c4b4b;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.analyze-btn:hover {
+  background: #3a2e2e;
+  transform: scale(1.05);
+}
+
+.scan-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.scan_btn {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  padding: 12px 25px;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+.scan_btn:hover {
+  color: white;
+  background-color: #ca8e83;
+}
+
+/* Sections */
+section {
+  padding: 60px 0;
+}
+
+.section-title {
+  text-align: center;
+  font-family: "Playfair Display", serif;
+  font-size: 36px;
+  color: var(--heading-color);
+  margin-bottom: 40px;
+}
+
+/* Advantages */
+.advantages {
+  background-color: var(--secondary-color);
+}
+
+.advantage-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  align-items: center;
+}
+
+.advantage-card {
+  background-color: var(--primary-color);
+  padding: 25px;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.main-advantage {
+  grid-column: 1 / span 2;
+  background-color: var(--primary-color);
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.main-advantage h2 {
+  font-family: "Playfair Display", serif;
+  color: var(--heading-color);
+}
+
+/* Tutorial */
+.tutorial {
+  background-color: #f7f3f1;
+}
+
+.tutorial-steps {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.step {
+  max-width: 300px;
+  margin: 20px;
+}
+
+.step-img {
+  background-color: #ca9388;
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+}
+
+.step-img img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.step h3 {
+  font-family: "Playfair Display", serif;
+  color: var(--heading-color);
+  margin-bottom: 10px;
+}
+
+.step p {
+  font-size: 14px;
+}
+
+.arrow {
+  font-size: 50px;
+  color: var(--heading-color);
+  align-self: center;
+  margin: 0 20px;
+}
+
+.disclaimer {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 30px;
+  color: #888;
+}
+
+/* Footer */
+footer {
+  background-color: #ca8e83;
+  text-align: center;
+  padding: 40px 0;
+  border-top: 2px;
+}
+
+.footer-logo {
+  font-family: "Playfair Display", serif;
+  font-size: 28px;
+  color: #f5eeed;
+  margin-bottom: 10px;
+}
+
+.footer-logo img {
+  height: 50px;
+  margin-right: 10px;
+}
+
+.footer-tagline {
+  color: #f5eeed;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+.contact-info {
+  color: #f5eeed;
+  font-size: 10px;
+  margin-bottom: 20px;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  text-decoration: none;
+  color: white;
+}
+
+.social-icons a {
+  color: #f5eeed;
+  margin: 0 10px;
+  font-size: 25px;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #d5a695; /* Ganti warna ikon saat di-hover */
+  transform: scale(1.1); /* Ikon membesar 10% saat di-hover */
+}
+
+.social-icons {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  margin: 0 10px;
+  border-radius: 50%;
+  font-size: 20px;
+  background-color: transparent;
+  text-decoration: none;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+  }
+
+  .nav-links {
+    margin-top: 15px;
+  }
+
+  .nav-links li {
+    margin: 0 10px;
+  }
+
+  .hero-content {
+    flex-direction: column;
+  }
+
+  .hero-text,
+  .hero-image {
+    margin: 0;
+    text-align: center;
+  }
+
+  .hero-text h1 {
+    font-size: 36px;
+  }
+
+  .advantage-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .main-advantage {
+    grid-column: auto;
+  }
+
+  .tutorial-steps {
+    flex-direction: column;
+    align-items: center;
+  }
+}

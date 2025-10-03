@@ -1,0 +1,10 @@
+flask
+tensorflow
+keras
+numpy
+pillow
+opencv-python
+python-dotenv
+google-generativeai
+werkzeug
+markdown

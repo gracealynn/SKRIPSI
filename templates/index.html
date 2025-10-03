@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Skinalyze</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <img
+            src="{{ url_for('static', filename='img/Logo2.png') }}"
+            alt="Skinalyze Logo"
+          />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#home">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#tutorial">Tutorial</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contactus">Contact Us</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <main>
+      <!-- Section Home -->
+      <section id="home" class="hero">
+        <div class="container">
+          <div class="hero-content">
+            <!-- Text di kiri -->
+            <div class="hero-text">
+              <h1>Apa itu Skinalyze?</h1>
+              <p>
+                Teknologi analisis kulit berbasis AI, Skinalyze akan membantu
+                Anda memahami kondisi kulit wajah Anda secara objektif.
+                Skinalyze akan memberikan hasil klasifikasi permasalahan kulit
+                wajah dan rekomendasi perawatan yang sesuai.
+              </p>
+
+              {% if error %}
+              <div class="alert alert-danger mt-3" role="alert">
+                {{ error }}
+              </div>
+              {% endif %}
+
+              <form action="/" method="POST" enctype="multipart/form-data">
+                <input
+                  type="file"
+                  name="file"
+                  id="fileInput"
+                  accept="image/*"
+                  hidden
+                  required
+                  onchange="document.getElementById('fileName').textContent = this.files[0].name"
+                />
+                <label for="fileInput" class="upload-btn">
+                  <i class="fas fa-upload"></i> Pilih Foto
+                </label>
+                <button type="submit" class="analyze-btn">
+                  Upload & Analisis
+                </button>
+              </form>
+            </div>
+
+            <!-- Gambar di kanan -->
+            <div class="hero-image">
+              <img
+                src="{{ url_for('static', filename='img/IMG_7848.JPG') }}"
+                alt="Skin analysis illustration"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="problems">
+        <h2 class="section-title">Masalah Kulit yang Dianalisis</h2>
+        <div class="swiper mySwiper">
+          <div class="swiper-wrapper card-slider">
+            <div class="swiper-slide">
+              <div class="card" style="width: 18rem">
+                <img
+                  src="{{ url_for('static', filename='img/jerawat.jpeg') }}"
+                  class="card-img-top"
+                  alt="Jerawat"
+                />
+                <div class="card-body">
+                  <h3>Jerawat</h3>
+                  <p class="card-text">
+                    Jerawat adalah peradangan pada kulit wajah ketika pori-pori
+                    tersumbat oleh minyak berlebih dan sel kulit mati, sering
+                    kali menyebabkan munculnya bintil, komedo, atau benjolan
+                    kecil.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="card" style="width: 18rem">
+                <img
+                  src="{{ url_for('static', filename='img/kerutan.jpeg') }}"
+                  class="card-img-top"
+                  alt="Kerutan"
+                />
+                <div class="card-body">
+                  <h3>Kerutan</h3>
+                  <p class="card-text">
+                    Kerutan adalah lipatan atau garis yang terbentuk pada kulit
+                    wajah seiring bertambahnya usia. Hal ini terjadi karena
+                    kulit kehilangan kolagen dan elastin, yang membuatnya tidak
+                    lagi elastis dan kencang.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="card" style="width: 18rem">
+                <img
+                  src="{{ url_for('static', filename='img/dark spot.jpeg') }}"
+                  class="card-img-top"
+                  alt="Dark-Spot"
+                />
+                <div class="card-body">
+                  <h3>Dark-Spot</h3>
+                  <p class="card-text">
+                    Dark spot atau bintik hitam adalah area kulit yang lebih
+                    gelap akibat produksi melanin berlebih. Ini sering
+                    disebabkan oleh paparan sinar matahari, bekas jerawat, atau
+                    perubahan hormon.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="card" style="width: 18rem">
+                <img
+                  src="{{ url_for('static', filename='img/kemerahan.jpeg') }}"
+                  class="card-img-top"
+                  alt="Kemerahan"
+                />
+                <div class="card-body">
+                  <h3>Kemerahan</h3>
+                  <p class="card-text">
+                    Kemerahan pada kulit adalah kondisi saat kulit tampak merah
+                    atau meradang. Ini bisa disebabkan oleh iritasi, alergi,
+                    jerawat, rosacea, atau paparan sinar matahari berlebih.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="card" style="width: 18rem">
+                <img
+                  src="{{ url_for('static', filename='img/kulit kering.jpeg') }}"
+                  class="card-img-top"
+                  alt="Kulit Kering"
+                />
+                <div class="card-body">
+                  <h3>Kulit Kering</h3>
+                  <p class="card-text">
+                    Kulit kering adalah kondisi saat kulit kekurangan kelembapan
+                    alami, sehingga terasa kasar, bersisik, atau bahkan gatal.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="card" style="width: 18rem">
+                <img
+                  src="{{ url_for('static', filename='img/kulit berminyak.jpeg') }}"
+                  class="card-img-top"
+                  alt="Kulit Berminyak"
+                />
+                <div class="card-body">
+                  <h3>Kulit Berminyak</h3>
+                  <p class="card-text">
+                    Kulit berminyak adalah kondisi saat kulit memproduksi minyak
+                    berlebih, sehingga tampak mengkilap dan rentan terhadap
+                    jerawat.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
+        </div>
+      </section>
+
+      <section class="advantages">
+        <div class="container">
+          <div class="advantage-grid">
+            <div class="advantage-card">
+              <p>
+                Performa model ini dalam mengenali atau memprediksi data yang
+                sudah dilatih mencapai 90% tingkat akurasi.
+              </p>
+            </div>
+            <div class="advantage-card">
+              <p>
+                Memanfaatkan kecerdasan buatan (AI) untuk mengidentifikasi
+                perawatan kulit yang sesuai.
+              </p>
+            </div>
+            <div class="main-advantage">
+              <h2>Keunggulan Skinalyze</h2>
+            </div>
+            <div class="advantage-card">
+              <p>
+                Validasi yang dilakukan mencakup spektrum luas wanita, termasuk
+                berbagai etnis, warna kulit, dan kelompok usia.
+              </p>
+            </div>
+            <div class="advantage-card">
+              <p>
+                Memanfaatkan kecerdasan buatan (AI) untuk merekomendasi produk
+                perawatan yang sesuai berdasarkan hasil analisis.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Section Tutorial -->
+      <section id="tutorial" class="tutorial">
+        <div class="container">
+          <h2 class="section-title">Cara menggunakan Skinalyze</h2>
+          <div class="tutorial-steps">
+            <div class="step">
+              <div class="step-img">
+                <img
+                  src="{{ url_for('static', filename='img/Tutorial1.png') }}"
+                  class="card-img-top"
+                  alt="Kulit Berminyak"
+                />
+              </div>
+              <h3>Ambil atau Upload Selfie</h3>
+              <p>Foto wajah frontal dengan pencahayaan yang baik.</p>
+            </div>
+            <div class="step">
+              <div class="step-img">
+                <img
+                  src="{{ url_for('static', filename='img/Tutorial2.png') }}"
+                  class="card-img-top"
+                  alt="Kulit Berminyak"
+                />
+              </div>
+              <h3>Hasil Analisis</h3>
+              <p>
+                Grad-CAM, Hasil Analisis, Penjelasan Jerawat & Penjelasan hasil
+                analisis.
+              </p>
+            </div>
+            <div class="step">
+              <div class="step-img">
+                <img
+                  src="https://i.ibb.co/h9yTz7K/Tutorial-Step3.png"
+                  alt="Step 3: Treatment recommendations"
+                />
+              </div>
+              <h3>Rekomendasi Perawatan</h3>
+              <p>
+                Rekomendasi Perawatan, Kandungan yang dibutuhkan, Product, Nama
+                Product, Hasil Produk & Kandungan pada produk.
+              </p>
+            </div>
+          </div>
+          <div class="scan-btn-container">
+            <a href="#home" class="scan_btn">Mulai Scan</a>
+          </div>
+          <p class="disclaimer">
+            *Data dari user seperti foto, tidak akan disimpan.
+          </p>
+        </div>
+      </section>
+    </main>
+    <!-- Section Contact Us -->
+    <footer id="contactus">
+      <div class="container">
+        <div class="footer-logo">
+          <img
+            src="{{ url_for('static', filename='img/Logo2.png') }}"
+            alt="Skinalyze Logo"
+          />
+        </div>
+        <p class="footer-tagline">Analisis Cerdas untuk Kulit Wajah Sehat</p>
+        <p class="contact-info">gegefaithskripsi@gmail.com</p>
+        <div class="social-icons">
+          <a href="#">
+            <i class="fab fa-facebook"></i>
+          </a>
+          <a href="#">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="#">
+            <i class="fab fa-linkedin"></i>
+          </a>
+        </div>
+      </div>
+    </footer>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/navscroll.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/swiper.js') }}"></script>
+  </body>
+</html>

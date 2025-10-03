@@ -1,0 +1,37 @@
+node_modules
+# Virtual environment
+venv/
+ENV/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Logs
+*.log
+
+# Data & models
+*.h5
+*.hdf5
+*.ckpt
+*.tflite
+*.onnx
+*.pt
+*.pth
+*.pkl
+*.zip
+*.rar
+*.tar
+*.gz
+*.csv
+*.xlsx
+
+# Jupyter / notebook
+.ipynb_checkpoints/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
