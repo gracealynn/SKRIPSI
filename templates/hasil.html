@@ -53,7 +53,7 @@
       <div class="hero"></div>
       <!-- Judul -->
         <h2>Hasil Analisis</h2>
-      <h3>{{ prediction }} ({{ confidence }})</h3>
+      <h3>{{ prediction }}</h3>
 
       <div class="gradcam-section">
         <div class="gradcam-card">
@@ -85,8 +85,8 @@
       </div>
       {% endif %}
 
-      <div class="back-btn-container">
-        <a href="{{ url_for('index') }}">← Upload gambar lain</a>
+      <div class="scan-new-container">
+        <a href="{{ url_for('index') }}" class="scan_new_btn">Upload gambar lain</a>
       </div>
     </section>
   </body>

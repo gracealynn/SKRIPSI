@@ -81,7 +81,7 @@ body {
 /* Card lebih besar */
 .problems .card {
   width: 320px !important; /* lebar card lebih besar */
-  min-height: 420px !important; /* tinggi minimal lebih tinggi */
+  min-height: 450px; /* tinggi minimal lebih tinggi */
   display: flex;
   flex-direction: column;
   margin: 0 auto !important;
@@ -146,6 +146,20 @@ body {
 .swiper-button-next,
 .swiper-button-prev {
   color: #d39f9f; /* Menggunakan warna teks utama Anda */
+}
+
+/* Atur posisi panah swiper agar seimbang kiri-kanan */
+.swiper-button-prev {
+  left: 40px !important; /* jarak dari sisi kiri layar */
+}
+
+.swiper-button-next {
+  right: 40px !important; /* jarak dari sisi kanan layar */
+}
+
+/* Tambah sedikit ruang antar panah dan card */
+.problems .swiper {
+  padding: 0 60px; /* beri padding kiri-kanan agar panah tidak menempel ke card */
 }
 
 .hero {
@@ -247,6 +261,27 @@ body {
   background-color: #ca8e83;
 }
 
+/* Spinner kecil di dalam tombol */
+.analyze-btn .spinner {
+  font-size: 14px;
+  vertical-align: middle;
+  color: #fff;
+}
+
+.upload-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* jarak antar tombol */
+  margin-top: 15px;
+}
+
+.file-message {
+  display: block;
+  margin-top: 10px;
+  color: #5c4b4b;
+  font-weight: 600;
+}
+
 /* Sections */
 section {
   padding: 60px 0;
@@ -263,33 +298,38 @@ section {
 /* Advantages */
 .advantages {
   background-color: var(--secondary-color);
+  padding: 60px 100px;
 }
 
 .advantage-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  align-items: center;
+  gap: 30px;
+  justify-items: center;
+  align-items: stretch;
+  margin: 0 auto;
 }
 
 .advantage-card {
   background-color: var(--primary-color);
-  padding: 25px;
+  padding: 30px;
   border-radius: 15px;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
 }
 
-.main-advantage {
-  grid-column: 1 / span 2;
-  background-color: var(--primary-color);
-  padding: 40px;
-  border-radius: 20px;
-  text-align: center;
-}
-
-.main-advantage h2 {
-  font-family: "Playfair Display", serif;
-  color: var(--heading-color);
+@media (max-width: 992px) {
+  .advantage-grid {
+    grid-template-columns: 1fr;
+    max-width: 90%;
+  }
+  .advantages {
+    padding: 40px 30px;
+  }
 }
 
 /* Tutorial */

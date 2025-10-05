@@ -23,11 +23,6 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
@@ -93,7 +88,12 @@
               </div>
               {% endif %}
 
-              <form action="/" method="POST" enctype="multipart/form-data">
+              <form
+                action="/"
+                method="POST"
+                enctype="multipart/form-data"
+                id="uploadForm"
+              >
                 <input
                   type="file"
                   name="file"
@@ -101,14 +101,26 @@
                   accept="image/*"
                   hidden
                   required
-                  onchange="document.getElementById('fileName').textContent = this.files[0].name"
                 />
-                <label for="fileInput" class="upload-btn">
-                  <i class="fas fa-upload"></i> Pilih Foto
-                </label>
-                <button type="submit" class="analyze-btn">
-                  Upload & Analisis
-                </button>
+
+                <div class="upload-actions">
+                  <label for="fileInput" class="upload-btn">
+                    <i class="fas fa-upload"></i> Pilih Foto
+                  </label>
+
+                  <button type="submit" class="analyze-btn" id="analyzeBtn">
+                    <span class="btn-text">Upload & Analisis</span>
+                    <span
+                      class="spinner"
+                      style="display: none; margin-left: 8px"
+                    >
+                      <i class="fas fa-spinner fa-spin"></i>
+                    </span>
+                  </button>
+                </div>
+
+                <!-- Pesan file terpilih -->
+                <span id="fileMessage" class="file-message"></span>
               </form>
             </div>
 
@@ -239,6 +251,7 @@
 
       <section class="advantages">
         <div class="container">
+          <h2 class="section-title">Keunggulan Skinalyze</h2>
           <div class="advantage-grid">
             <div class="advantage-card">
               <p>
@@ -251,9 +264,6 @@
                 Memanfaatkan kecerdasan buatan (AI) untuk mengidentifikasi
                 perawatan kulit yang sesuai.
               </p>
-            </div>
-            <div class="main-advantage">
-              <h2>Keunggulan Skinalyze</h2>
             </div>
             <div class="advantage-card">
               <p>
@@ -278,39 +288,37 @@
             <div class="step">
               <div class="step-img">
                 <img
-                  src="{{ url_for('static', filename='img/Tutorial1.png') }}"
+                  src="{{ url_for('static', filename='img/tutor1.png') }}"
                   class="card-img-top"
                   alt="Kulit Berminyak"
                 />
               </div>
               <h3>Ambil atau Upload Selfie</h3>
-              <p>Foto wajah frontal dengan pencahayaan yang baik.</p>
+              <p>Foto wajah yang bermasalah dengan pencahayaan yang baik.</p>
             </div>
             <div class="step">
               <div class="step-img">
                 <img
-                  src="{{ url_for('static', filename='img/Tutorial2.png') }}"
+                  src="{{ url_for('static', filename='img/tutor2.png') }}"
                   class="card-img-top"
                   alt="Kulit Berminyak"
                 />
               </div>
               <h3>Hasil Analisis</h3>
-              <p>
-                Grad-CAM, Hasil Analisis, Penjelasan Jerawat & Penjelasan hasil
-                analisis.
-              </p>
+              <p>Grad-CAM, Hasil Analisis & Penjelasan hasil analisis.</p>
             </div>
             <div class="step">
               <div class="step-img">
                 <img
-                  src="https://i.ibb.co/h9yTz7K/Tutorial-Step3.png"
-                  alt="Step 3: Treatment recommendations"
+                  src="{{ url_for('static', filename='img/tutor3.png') }}"
+                  class="card-img-top"
+                  alt="Kulit Berminyak"
                 />
               </div>
               <h3>Rekomendasi Perawatan</h3>
               <p>
-                Rekomendasi Perawatan, Kandungan yang dibutuhkan, Product, Nama
-                Product, Hasil Produk & Kandungan pada produk.
+                Rekomendasi Perawatan, Kandungan yang dibutuhkan, Product
+                &Kandungan pada produk.
               </p>
             </div>
           </div>
@@ -354,5 +362,47 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/navscroll.js') }}"></script>
     <script src="{{ url_for('static', filename='js/swiper.js') }}"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const navLinks = document.querySelectorAll(".navbar-nav .nav-link");
+        const navbarCollapse = document.querySelector(".navbar-collapse");
+
+        navLinks.forEach(function (link) {
+          link.addEventListener("click", function () {
+            const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
+              toggle: false,
+            });
+            bsCollapse.hide();
+          });
+        });
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById("fileInput");
+        const fileMessage = document.getElementById("fileMessage");
+        const uploadForm = document.getElementById("uploadForm");
+        const analyzeBtn = document.getElementById("analyzeBtn");
+        const btnText = analyzeBtn.querySelector(".btn-text");
+        const spinner = analyzeBtn.querySelector(".spinner");
+
+        // tampilkan pesan file terpilih
+        fileInput.addEventListener("change", function () {
+          if (this.files.length > 0) {
+            fileMessage.textContent =
+              "✔️ " + this.files[0].name + " berhasil dipilih";
+          } else {
+            fileMessage.textContent = "";
+          }
+        });
+
+        // tampilkan spinner saat submit
+        uploadForm.addEventListener("submit", function () {
+          btnText.textContent = "Sedang menganalisis...";
+          spinner.style.display = "inline-block";
+          analyzeBtn.disabled = true; // disable biar tidak double klik
+        });
+      });
+    </script>
   </body>
 </html>
