@@ -12,6 +12,14 @@
   align-items: center;
 }
 
+.navbar .container,
+.navbar .container-fluid {
+  width: 100%;
+  display: flex;
+  justify-content: center !important;
+  align-items: center;
+}
+
 .navbar-brand img {
   width: 200px;
   height: auto;

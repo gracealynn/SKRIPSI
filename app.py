@@ -188,6 +188,21 @@ Format keluaran:
 - Penutup berupa disclaimer singkat
 """
 
+def build_input_validation_prompt(filename: str):
+    return f"""
+Kamu adalah validator gambar untuk aplikasi analisis kulit wajah.
+
+Info gambar:
+- Nama file: {filename}
+
+Tugasmu:
+1. Tentukan apakah gambar ini **menampilkan wajah manusia**, baik penuh maupun sebagian (close-up atau dari samping).
+2. Gambar yang menampilkan hewan, boneka, karakter kartun, patung, atau benda lain **tidak boleh diterima**.
+3. Jika gambar valid (ada wajah manusia), jawab **hanya**: "VALID - wajah manusia terdeteksi."
+4. Jika gambar tidak valid (bukan wajah manusia), jawab **hanya**: "TIDAK VALID - bukan wajah manusia."
+5. Jangan tambahkan penjelasan lain. Jawaban harus singkat dan tegas.
+"""
+
 # ---------------- Flask app ----------------
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = str(UPLOAD_FOLDER)
@@ -209,9 +224,33 @@ def index():
         save_path = UPLOAD_FOLDER / filename
         file.save(str(save_path))
 
-        # Validasi wajah sebelum analisis
-        if not is_face_image(str(save_path)):
-            return render_template("index.html", error="Upload harus berupa foto wajah manusia (walaupun sebagian).")
+        llm_feedback = None
+        llm_valid = False
+
+        if llm_client is not None:
+            try:
+                prompt = build_input_validation_prompt(filename)
+                img_for_llm = Image.open(str(save_path))
+                resp = llm_client.generate_content([prompt, img_for_llm])
+                llm_feedback = (getattr(resp, "text", None) or str(resp)).strip()
+
+                # ✅ validasi tegas
+                if "valid" in llm_feedback.lower() and "tidak" not in llm_feedback.lower():
+                    llm_valid = True
+            except Exception as e:
+                llm_feedback = f"LLM gagal validasi input: {e}"
+
+        # fallback OpenCV kalau LLM tidak aktif
+        if not llm_valid:
+            has_face = is_face_image(str(save_path))
+            if has_face:
+                llm_feedback = llm_feedback or "VALID - wajah manusia terdeteksi (fallback OpenCV)."
+                llm_valid = True
+            else:
+                llm_feedback = llm_feedback or "TIDAK VALID - bukan wajah manusia."
+
+        if not llm_valid:
+            return render_template("index.html", error=llm_feedback)
 
         img_orig = Image.open(str(save_path)).convert("RGB")
         img_orig_rgb = np.array(img_orig)
