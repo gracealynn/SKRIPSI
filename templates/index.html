@@ -63,6 +63,9 @@
             <li class="nav-item">
               <a class="nav-link" href="#contactus">Contact Us</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('history') }}">History</a>
+            </li>
           </ul>
         </div>
       </div>
@@ -94,6 +97,13 @@
                 enctype="multipart/form-data"
                 id="uploadForm"
               >
+                <input
+                  type="text"
+                  name="nama"
+                  placeholder="Masukkan nama Anda"
+                  required
+                  class="name-input"
+                />
                 <input
                   type="file"
                   name="file"

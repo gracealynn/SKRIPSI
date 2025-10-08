@@ -51,7 +51,7 @@ body {
 }
 
 .navbar-nav .nav-link {
-  color: #ddd3d3; /* Replace with your desired text color */
+  color: #f5eeed; /* Replace with your desired text color */
   margin: 20px;
   padding-right: 10px; /* Adjust spacing between links */
 }
@@ -205,6 +205,33 @@ body {
   width: 100%;
   height: auto;
   border-radius: 15px;
+}
+
+.name-input {
+  display: inline-block;
+  padding: 10px 18px;
+  font-family: "Poppins", sans-serif;
+  font-size: 15px;
+  color: #5a2f27;
+  background-color: #fffaf4;
+  border: 2px solid #ca8e83;
+  border-radius: 25px;
+  width: 300px;
+  text-align: center;
+  margin: 10px 10px 0 0; /* spasi kanan agar sejajar dengan tombol */
+  transition: all 0.3s ease;
+  vertical-align: middle; /* biar sejajar secara vertikal dengan tombol */
+}
+
+.name-input::placeholder {
+  color: #b58c80;
+}
+
+.name-input:focus {
+  outline: none;
+  border-color: #b2776e;
+  background-color: #fff6f2;
+  box-shadow: 0 0 8px rgba(202, 142, 131, 0.4);
 }
 
 /* BUTTON UPLOAD*/

@@ -1,0 +1,237 @@
+:root {
+  --primary-color: #e2bba9;
+  --secondary-color: #ffffff;
+  --text-color: #5c4b4b;
+  --heading-color: #5c4b4b;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  color: var(--text-color);
+  background-color: var(--secondary-color);
+  padding-top: 80px;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #ca8e83 !important;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: top 0.3s;
+}
+
+.navbar-brand img {
+  width: 200px;
+  height: auto;
+  margin-left: 30px;
+}
+
+.nav-link {
+  color: #f5eeed !important;
+  font-weight: 500;
+  margin-right: 20px;
+}
+
+.nav-link:hover {
+  background-color: #f0e0d8;
+  color: #ca8e83 !important;
+  border-radius: 5px;
+}
+
+/* Search */
+.search-bar {
+  border-radius: 50px 0 0 50px;
+  border: 1px solid #ca8e83;
+  padding: 8px 15px;
+  min-width: 350px;
+}
+
+.btn-search {
+  background-color: #914943;
+  color: white;
+  border-radius: 0 50px 50px 0;
+  border: none;
+  padding: 8px 20px;
+  transition: 0.3s ease;
+}
+
+.btn-search:hover {
+  background-color: #a86b63;
+}
+
+/* Page content */
+.page-content {
+  max-width: 1000px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+.section-title {
+  text-align: center;
+  font-family: "Playfair Display", serif;
+  font-size: 36px;
+  color: var(--heading-color);
+  margin-bottom: 40px;
+}
+
+/* History Card */
+.history-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.history-card {
+  background-color: #fffaf4;
+  border: 2px solid #ca8e83;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  transition: 0.3s ease;
+}
+
+.history-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.user-name {
+  font-family: "Playfair Display", serif;
+  color: #5c4b4b;
+  margin-bottom: 5px;
+}
+
+.label {
+  display: inline-block;
+  background-color: #f3d8cd;
+  padding: 5px 15px;
+  border-radius: 15px;
+  font-weight: 500;
+  color: #7a3f35;
+  margin-bottom: 15px;
+}
+
+.images {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.images img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #dcb4aa;
+}
+
+/* Rekomendasi Preview */
+.recommendation-preview {
+  background-color: #fdf1ec;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.recommendation-preview h6 {
+  font-family: "Playfair Display", serif;
+  color: #7a3f35;
+  margin-bottom: 8px;
+}
+
+.recommendation-preview p {
+  font-size: 14px;
+  color: #5a2f27;
+  line-height: 1.5;
+}
+
+/* Footer */
+footer {
+  background-color: #ca8e83;
+  text-align: center;
+  padding: 40px 0;
+  border-top: 2px;
+}
+
+.footer-logo {
+  font-family: "Playfair Display", serif;
+  font-size: 28px;
+  color: #f5eeed;
+  margin-bottom: 10px;
+}
+
+.footer-logo img {
+  height: 50px;
+  margin-right: 10px;
+}
+
+.footer-tagline {
+  color: #f5eeed;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+.contact-info {
+  color: #f5eeed;
+  font-size: 10px;
+  margin-bottom: 20px;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  text-decoration: none;
+  color: white;
+}
+
+.social-icons a {
+  color: #f5eeed;
+  margin: 0 10px;
+  font-size: 25px;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #d5a695; /* Ganti warna ikon saat di-hover */
+  transform: scale(1.1); /* Ikon membesar 10% saat di-hover */
+}
+
+.social-icons {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  margin: 0 10px;
+  border-radius: 50%;
+  font-size: 20px;
+  background-color: transparent;
+  text-decoration: none;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+  }
+
+  .search-bar {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .images img {
+    width: 100%;
+    height: auto;
+  }
+
+  .history-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

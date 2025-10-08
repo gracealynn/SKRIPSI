@@ -6,7 +6,7 @@ from PIL import Image
 import numpy as np
 import cv2
 
-from flask import Flask, request, render_template, url_for
+from flask import Flask, request, render_template, url_for, redirect
 from werkzeug.utils import secure_filename
 
 import tensorflow as tf
@@ -16,6 +16,10 @@ from tensorflow.keras.preprocessing import image as keras_image
 
 from dotenv import load_dotenv
 import markdown
+
+from pymongo import MongoClient
+from datetime import datetime
+from bson import ObjectId
 
 # Optional LLM client (Gemini)
 try:
@@ -45,6 +49,7 @@ logger = logging.getLogger(__name__)
 
 # ---------------- Load .env & configure LLM ----------------
 load_dotenv()
+MONGO_URI = os.getenv("MONGO_URI")
 GEMINI_KEY = os.getenv("GEMINI_API_KEY")
 llm_client = None
 if genai is not None and GEMINI_KEY:
@@ -203,6 +208,11 @@ Tugasmu:
 5. Jangan tambahkan penjelasan lain. Jawaban harus singkat dan tegas.
 """
 
+# Connect to MongoDB Atlas
+client = MongoClient(MONGO_URI)
+db = client["skinalyze_db"]
+collection = db["analysis_history"]
+
 # ---------------- Flask app ----------------
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = str(UPLOAD_FOLDER)
@@ -300,13 +310,30 @@ def index():
                 recommendation_text = getattr(resp2, "text", None) or str(resp2)
 
                 # Format agar rapi di HTML
-                import markdown
                 explanation_text = markdown.markdown(explanation_text, extensions=["extra"])
                 recommendation_text = markdown.markdown(recommendation_text, extensions=["extra"])
 
             except Exception as e:
                 explanation_text = "LLM gagal menjelaskan prediksi."
                 recommendation_text = "LLM gagal memberi rekomendasi."
+
+        # ================== Simpan ke MongoDB ==================
+        try:
+            doc = {
+                "user_name": request.form.get("nama", "Anonim"),  # pastikan form HTML kirim field 'nama'
+                "prediction": pred_label,
+                "confidence": round(confidence, 3),
+                "original": url_for("static", filename=f"uploads/{orig_save.name}"),
+                "heatmap": url_for("static", filename=f"uploads/{heat_save.name}"),
+                "overlay": url_for("static", filename=f"uploads/{overlay_save.name}"),
+                "explanation": explanation_text,
+                "recommendation": recommendation_text,
+                "created_at": datetime.utcnow()
+                }
+            collection.insert_one(doc)
+            logger.info("Hasil analisis berhasil disimpan ke MongoDB.")
+        except Exception as e:
+            logger.error(f"Gagal menyimpan ke MongoDB: {e}")
 
         return render_template(
             "hasil.html",
@@ -320,6 +347,44 @@ def index():
         )
 
     return render_template("index.html")
+
+@app.route("/history")
+def history():
+    query = request.args.get("q", "")
+
+    try:
+        if query:
+            histories = list(collection.find({
+                "$or": [
+                    {"user_name": {"$regex": query, "$options": "i"}},
+                    {"prediction": {"$regex": query, "$options": "i"}},
+                    {"recommendation": {"$regex": query, "$options": "i"}}
+                ]
+            }).sort("created_at", -1))
+        else:
+            histories = list(collection.find().sort("created_at", -1))
+
+        for h in histories:
+            h["_id"] = str(h["_id"])  # ubah ObjectId ke string agar bisa dikirim ke template
+
+    except Exception as e:
+        histories = []
+        logger.error(f"Gagal mengambil data history: {e}")
+
+    return render_template("history.html", histories=histories)
+
+@app.route("/history/<history_id>")
+def history_detail(history_id):
+    try:
+        history_data = collection.find_one({"_id": ObjectId(history_id)})
+        if not history_data:
+            return render_template("history_detail.html", error="Data tidak ditemukan.")
+
+        history_data["_id"] = str(history_data["_id"])
+        return render_template("history_detail.html", data=history_data)
+    except Exception as e:
+        logger.error(f"Gagal mengambil detail history: {e}")
+        return render_template("history_detail.html", error="Terjadi kesalahan saat memuat data.")
  
 @app.route("/test-gemini")
 def test_gemini():
@@ -330,6 +395,14 @@ def test_gemini():
         return getattr(resp, "text", str(resp))
     except Exception as e:
         return f"Gemini error: {e}"
+    
+@app.route("/test-db")
+def test_db():
+    try:
+        count = collection.count_documents({})
+        return f"Terhubung ke MongoDB Atlas ✅ (total {count} dokumen)"
+    except Exception as e:
+        return f"Gagal konek MongoDB ❌: {e}"
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
