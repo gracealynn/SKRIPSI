@@ -74,22 +74,35 @@ logger.info("Model loaded.")
 def allowed_file(filename: str):
     return Path(filename).suffix.lower() in ALLOWED_EXT
 
-def is_face_image(image_path: str) -> bool:
-    """Cek apakah gambar punya wajah (frontal atau sebagian)"""
+def is_face_image(image_path):
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+    profile_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_profileface.xml")
+    
     img = cv2.imread(image_path)
     if img is None:
         return False
+    
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-    # 1. Cek frontal face
-    frontal_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-    faces_frontal = frontal_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=4, minSize=(60, 60))
-
-    # 2. Cek profile face (samping)
-    profile_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_profileface.xml")
-    faces_profile = profile_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=4, minSize=(60, 60))
-
-    return (len(faces_frontal) > 0) or (len(faces_profile) > 0)
+    
+    # Lebih toleran terhadap wajah sebagian
+    faces = face_cascade.detectMultiScale(
+        gray,
+        scaleFactor=1.05,    # lebih sensitif, jarak antar ukuran kecil
+        minNeighbors=2,      # lebih longgar (default 5)
+        minSize=(40, 40)     # wajah kecil pun bisa dideteksi
+    )
+    
+    # Deteksi wajah samping (profil)
+    profiles = profile_cascade.detectMultiScale(
+        gray,
+        scaleFactor=1.05,
+        minNeighbors=2,
+        minSize=(40, 40)
+    )
+    
+    # Gabungkan hasil
+    total_faces = len(faces) + len(profiles)
+    return total_faces > 0
 
 def find_last_conv_layer(keras_model):
     for layer in reversed(keras_model.layers):
@@ -195,9 +208,9 @@ Format keluaran:
 
 def build_input_validation_prompt(filename: str):
     return f"""
-Kamu adalah validator gambar untuk aplikasi analisis kulit wajah.
+Kamu adalah validator gambar untuk aplikasi analisis kulit wajah manusia.
 
-Info gambar:
+Informasi gambar:
 - Nama file: {filename}
 
 Tugasmu:
@@ -234,34 +247,33 @@ def index():
         save_path = UPLOAD_FOLDER / filename
         file.save(str(save_path))
 
-        llm_feedback = None
+        # ------------------ VALIDASI GAMBAR ------------------
+        opencv_valid = is_face_image(str(save_path))
         llm_valid = False
+        llm_feedback = "LLM tidak dijalankan."
 
+        # Selalu jalankan LLM validasi
         if llm_client is not None:
             try:
                 prompt = build_input_validation_prompt(filename)
                 img_for_llm = Image.open(str(save_path))
                 resp = llm_client.generate_content([prompt, img_for_llm])
                 llm_feedback = (getattr(resp, "text", None) or str(resp)).strip()
+                print("LLM feedback:", llm_feedback)  # debug log
 
-                # ✅ validasi tegas
-                if "valid" in llm_feedback.lower() and "tidak" not in llm_feedback.lower():
+                resp_text = llm_feedback.lower().strip()
+                if resp_text.startswith("valid") and "tidak" not in resp_text:
                     llm_valid = True
             except Exception as e:
                 llm_feedback = f"LLM gagal validasi input: {e}"
 
-        # fallback OpenCV kalau LLM tidak aktif
-        if not llm_valid:
-            has_face = is_face_image(str(save_path))
-            if has_face:
-                llm_feedback = llm_feedback or "VALID - wajah manusia terdeteksi (fallback OpenCV)."
-                llm_valid = True
-            else:
-                llm_feedback = llm_feedback or "TIDAK VALID - bukan wajah manusia."
+        # Gabungkan hasil dengan operasi AND
+        if not (opencv_valid and llm_valid):
+            error_message = "❌ Gambar tidak valid. Harap unggah foto wajah manusia (boleh sebagian)."
+            print(f"[VALIDATION FAIL] OpenCV={opencv_valid}, LLM={llm_feedback}")
+            return render_template("index.html", error=error_message)
 
-        if not llm_valid:
-            return render_template("index.html", error=llm_feedback)
-
+        # ------------------ LANJUTKAN PREDIKSI ------------------
         img_orig = Image.open(str(save_path)).convert("RGB")
         img_orig_rgb = np.array(img_orig)
 
@@ -281,6 +293,7 @@ def index():
             logger.exception("Grad-CAM gagal")
             return render_template("index.html", error=f"Grad-CAM error: {e}")
 
+        # ------------------ SIMPAN HASIL ------------------
         orig_save = UPLOAD_FOLDER / f"{base}_orig.jpg"
         heat_save = UPLOAD_FOLDER / f"{base}_heat.jpg"
         overlay_save = UPLOAD_FOLDER / f"{base}_overlay.jpg"
@@ -294,17 +307,16 @@ def index():
         Image.fromarray(overlay_rgb).save(str(overlay_save))
         save_resized_for_llm(overlay_rgb, overlay_llm_save)
 
+        # ------------------ LLM EXPLANATION + RECOMMENDATION ------------------
         explanation_text = None
         recommendation_text = None
         if llm_client is not None:
             try:
-                # Prompt 1: Penjelasan
                 prompt1 = build_explanation_prompt(pred_label)
                 img_for_llm = Image.open(str(overlay_llm_save))
                 resp1 = llm_client.generate_content([prompt1, img_for_llm])
                 explanation_text = getattr(resp1, "text", None) or str(resp1)
 
-                # Prompt 2: Rekomendasi
                 prompt2 = build_recommendation_prompt(pred_label)
                 resp2 = llm_client.generate_content(prompt2)
                 recommendation_text = getattr(resp2, "text", None) or str(resp2)
@@ -312,7 +324,6 @@ def index():
                 # Format agar rapi di HTML
                 explanation_text = markdown.markdown(explanation_text, extensions=["extra"])
                 recommendation_text = markdown.markdown(recommendation_text, extensions=["extra"])
-
             except Exception as e:
                 explanation_text = "LLM gagal menjelaskan prediksi."
                 recommendation_text = "LLM gagal memberi rekomendasi."
