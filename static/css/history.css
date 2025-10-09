@@ -172,6 +172,18 @@ footer {
   margin-bottom: 15px;
 }
 
+.email-link {
+  color: #ffffff; /* warna putih */
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.email-link:hover {
+  color: #e2bba9; /* warna krem lembut saat hover */
+  text-decoration: underline;
+}
+
 .contact-info {
   color: #f5eeed;
   font-size: 10px;

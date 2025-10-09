@@ -57,15 +57,15 @@
 
       <div class="gradcam-section">
         <div class="gradcam-card">
-          <img src="{{ original }}" alt="Foto User" />
+          <img src="data:image/jpeg;base64,{{ original_b64 }}" alt="Foto User" />
           <p>Foto Asli</p>
         </div>
         <div class="gradcam-card">
-          <img src="{{ heatmap }}" alt="Grad-CAM" />
+          <img src="data:image/jpeg;base64,{{ heatmap_b64 }}" alt="Grad-CAM" />
           <p>Grad-CAM</p>
         </div>
         <div class="gradcam-card">
-          <img src="{{ overlay }}" alt="Overlay Grad-CAM" />
+          <img src="data:image/jpeg;base64,{{ overlay_b64 }}" alt="Overlay Grad-CAM" />
           <p>Overlay</p>
         </div>
       </div>

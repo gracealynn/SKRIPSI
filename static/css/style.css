@@ -396,10 +396,6 @@ section {
   margin-bottom: 10px;
 }
 
-.step p {
-  font-size: 14px;
-}
-
 .arrow {
   font-size: 50px;
   color: var(--heading-color);
@@ -444,6 +440,18 @@ footer {
   color: #f5eeed;
   font-size: 10px;
   margin-bottom: 20px;
+}
+
+.email-link {
+  color: #ffffff; /* warna putih */
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.email-link:hover {
+  color: #e2bba9; /* warna krem lembut saat hover */
+  text-decoration: underline;
 }
 
 .social-icons {

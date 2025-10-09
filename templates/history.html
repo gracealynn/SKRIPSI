@@ -99,11 +99,17 @@
           <div class="images">
             <div>
               <p>Overlay</p>
-              <img src="{{ h.overlay }}" alt="Overlay" />
+              <img
+                src="data:image/jpeg;base64,{{ h.overlay_b64 }}"
+                alt="Overlay"
+              />
             </div>
             <div>
               <p>Grad-CAM</p>
-              <img src="{{ h.heatmap }}" alt="Grad-CAM" />
+              <img
+                src="data:image/jpeg;base64,{{ h.heatmap_b64 }}"
+                alt="Grad-CAM"
+              />
             </div>
           </div>
 
@@ -130,15 +136,35 @@
           />
         </div>
         <p class="footer-tagline">Analisis Cerdas untuk Kulit Wajah Sehat</p>
-        <p class="contact-info">gegefaithskripsi@gmail.com</p>
+        <p class="contact-info">
+          <a
+            href="https://mail.google.com/mail/?view=cm&fs=1&to=gegefaithskripsi@gmail.com"
+            target="_blank"
+            class="email-link"
+          >
+            gegefaithskripsi@gmail.com
+          </a>
+        </p>
         <div class="social-icons">
-          <a href="#">
+          <a
+            href="https://www.facebook.com/faithza.mandolang.1"
+            target="_blank"
+            aria-label="Facebook"
+          >
             <i class="fab fa-facebook"></i>
           </a>
-          <a href="#">
+          <a
+            href="https://www.instagram.com/grceb_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+            target="_blank"
+            aria-label="Instagram"
+          >
             <i class="fab fa-instagram"></i>
           </a>
-          <a href="#">
+          <a
+            href="https://www.linkedin.com/in/faithza-azalia-29a19b1a0"
+            target="_blank"
+            aria-label="LinkedIn"
+          >
             <i class="fab fa-linkedin"></i>
           </a>
         </div>

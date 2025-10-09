@@ -20,6 +20,8 @@ import markdown
 from pymongo import MongoClient
 from datetime import datetime
 from bson import ObjectId
+import base64
+import io
 
 # Optional LLM client (Gemini)
 try:
@@ -175,30 +177,34 @@ def save_resized_for_llm(overlay_rgb_uint8, path_out: Path, max_size=OVERLAY_LLM
 # ---------------- Prompt builders ----------------
 def build_explanation_prompt(pred_label: str):
     return f"""
-Kamu adalah asisten kecantikan.
+Kamu adalah sistem analisis kulit profesional.
 
 Hasil prediksi model: {pred_label}.
 
-Tugasmu:
-1. Jelaskan hasil prediksi model dengan bahasa sederhana agar mudah dipahami.
-2. Gunakan visualisasi Grad-CAM (overlay warna merah/oranye) untuk menjelaskan area wajah yang diperhatikan model.
-3. Terangkan kenapa area tersebut relevan dengan kondisi kulit {pred_label}.
-4. Gunakan bahasa ringan, ringkas, dan mudah dimengerti orang awam.
+Instruksi:
+1. Berikan penjelasan langsung mengenai kondisi kulit {pred_label} secara singkat, padat, dan informatif.
+2. Gunakan informasi dari visualisasi Grad-CAM (area berwarna merah/oranye) untuk menjelaskan bagian wajah yang menjadi fokus model.
+3. Jelaskan secara logis mengapa area tersebut berkaitan dengan kondisi kulit {pred_label}.
+4. Hindari sapaan atau kalimat pembuka seperti 'Halo', 'Tentu saja', dan sejenisnya.
+5. Gunakan gaya bahasa profesional, objektif, dan mudah dipahami pengguna umum.
 """
 
 def build_recommendation_prompt(pred_label: str):
     return f"""
-Kamu adalah ahli skincare.
+Kamu adalah sistem rekomendasi perawatan kulit profesional.
 
 Hasil prediksi model: {pred_label}.
 
 Tugasmu:
 1. Rekomendasikan **zat aktif skincare** yang sesuai untuk kondisi kulit {pred_label}.
-2. Berikan contoh **produk skincare nyata** (brand global/umum) yang mengandung zat aktif tersebut.
+2. Berikan contoh **produk skincare nyata** (brand indonesia dan global) yang mengandung zat aktif tersebut.
    - Sebutkan nama produk
+   - kisaran harga produk dalam Rp
    - Sebutkan zat aktif utama
-   - Jelaskan singkat kenapa produk itu cocok
-3. Ingatkan bahwa ini hanya saran umum berbasis AI, bukan diagnosis medis.
+   - Jelaskan singkat kenapa produk itu cocok dengan kondisi kulit {pred_label}
+3. Hindari kalimat pembuka seperti 'Halo', 'Tentu saja', atau ekspresi percakapan lainnya.
+4. Gunakan bahasa formal dan to the point.
+5. Ingatkan bahwa ini hanya saran umum berbasis AI, bukan diagnosis medis.
 
 Format keluaran:
 - Daftar poin untuk zat aktif
@@ -330,18 +336,29 @@ def index():
 
         # ================== Simpan ke MongoDB ==================
         try:
+            # Konversi gambar ke Base64
+            def img_to_base64(pil_image):
+                buffer = io.BytesIO()
+                pil_image.save(buffer, format="JPEG")
+                return base64.b64encode(buffer.getvalue()).decode("utf-8")
+
+            # Simpan gambar sebagai Base64
+            original_b64 = img_to_base64(img_orig)
+            heatmap_b64 = img_to_base64(Image.fromarray(heat_col_rgb))
+            overlay_b64 = img_to_base64(Image.fromarray(overlay_rgb))
+
             doc = {
-                "user_name": request.form.get("nama", "Anonim"),  # pastikan form HTML kirim field 'nama'
+                "user_name": request.form.get("nama", "Anonim"),
                 "prediction": pred_label,
-                "confidence": round(confidence, 3),
-                "original": url_for("static", filename=f"uploads/{orig_save.name}"),
-                "heatmap": url_for("static", filename=f"uploads/{heat_save.name}"),
-                "overlay": url_for("static", filename=f"uploads/{overlay_save.name}"),
+                "original_b64": original_b64,
+                "heatmap_b64": heatmap_b64,
+                "overlay_b64": overlay_b64,
                 "explanation": explanation_text,
                 "recommendation": recommendation_text,
                 "created_at": datetime.utcnow()
-                }
+            }
             collection.insert_one(doc)
+
             logger.info("Hasil analisis berhasil disimpan ke MongoDB.")
         except Exception as e:
             logger.error(f"Gagal menyimpan ke MongoDB: {e}")
@@ -349,10 +366,9 @@ def index():
         return render_template(
             "hasil.html",
             prediction=pred_label,
-            confidence=round(confidence, 3),
-            original=url_for("static", filename=f"uploads/{orig_save.name}"),
-            heatmap=url_for("static", filename=f"uploads/{heat_save.name}"),
-            overlay=url_for("static", filename=f"uploads/{overlay_save.name}"),
+            original_b64=original_b64,
+            heatmap_b64=heatmap_b64,
+            overlay_b64=overlay_b64,
             explanation=explanation_text,
             recommendation=recommendation_text
         )
