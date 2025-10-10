@@ -232,3 +232,83 @@ a:hover {
   color: #ca8e83;
   background-color: #ffffff;
 }
+
+/* Footer */
+footer {
+  background-color: #ca8e83;
+  text-align: center;
+
+  border-top: 2px;
+}
+
+.footer-logo {
+  font-family: "Playfair Display", serif;
+  font-size: 28px;
+  color: #f5eeed;
+  margin-bottom: 10px;
+}
+
+.footer-logo img {
+  height: 50px;
+  margin-right: 10px;
+}
+
+.footer-tagline {
+  color: #f5eeed;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+.contact-info {
+  color: #f5eeed;
+  font-size: 10px;
+  margin-bottom: 20px;
+}
+
+.email-link {
+  color: #ffffff; /* warna putih */
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.email-link:hover {
+  color: #e2bba9; /* warna krem lembut saat hover */
+  text-decoration: underline;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  text-decoration: none;
+  color: white;
+}
+
+.social-icons a {
+  color: #f5eeed;
+  margin: 0 10px;
+  font-size: 25px;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #d5a695; /* Ganti warna ikon saat di-hover */
+  transform: scale(1.1); /* Ikon membesar 10% saat di-hover */
+}
+
+.social-icons {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  margin: 0 10px;
+  border-radius: 50%;
+  font-size: 20px;
+  background-color: transparent;
+  text-decoration: none;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}

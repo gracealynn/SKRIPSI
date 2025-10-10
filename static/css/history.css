@@ -152,6 +152,7 @@ footer {
   text-align: center;
   padding: 40px 0;
   border-top: 2px;
+  margin-top: auto;
 }
 
 .footer-logo {
