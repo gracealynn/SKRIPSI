@@ -413,6 +413,8 @@
         const analyzeBtn = document.getElementById("analyzeBtn");
         const btnText = analyzeBtn.querySelector(".btn-text");
         const spinner = analyzeBtn.querySelector(".spinner");
+        const loadingOverlay = document.getElementById("loadingOverlay");
+        const loadingText = document.getElementById("loadingText");
 
         // tampilkan pesan file terpilih
         fileInput.addEventListener("change", function () {
@@ -429,8 +431,36 @@
           btnText.textContent = "Sedang menganalisis...";
           spinner.style.display = "inline-block";
           analyzeBtn.disabled = true; // disable biar tidak double klik
+
+          // Tampilkan overlay loading
+          loadingOverlay.style.display = "flex";
+          document.body.style.overflow = "hidden"; // Freeze scroll
+
+          // Ganti teks loading bertahap
+          let steps = [
+            "Validating...",
+            "Analysing...",
+            "Generating Explanation...",
+          ];
+          let stepIndex = 0;
+          loadingText.textContent = steps[stepIndex];
+
+          let interval = setInterval(() => {
+            stepIndex++;
+            if (stepIndex < steps.length) {
+              loadingText.textContent = steps[stepIndex];
+            } else {
+              clearInterval(interval);
+            }
+          }, 2000); // ganti setiap 2 detik
         });
       });
     </script>
+
+    <!-- Loading overlay -->
+    <div id="loadingOverlay">
+      <div class="spinner-border"></div>
+      <p class="loading-text" id="loadingText">Validating...</p>
+    </div>
   </body>
 </html>
