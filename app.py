@@ -23,6 +23,10 @@ from bson import ObjectId
 import base64
 import io
 
+import requests
+import urllib.parse
+import re
+
 # Optional LLM client (Gemini)
 try:
     import google.generativeai as genai
@@ -198,7 +202,7 @@ Hasil prediksi model: {pred_label}.
 Tugasmu:
 1. Rekomendasikan **zat aktif skincare** yang sesuai untuk kondisi kulit {pred_label}.
 2. Berikan contoh **produk skincare nyata** (brand indonesia dan global) yang mengandung zat aktif tersebut.
-   - Sebutkan nama produk
+   - Sebutkan nama produk. **PENTING: WAJIB bungkus nama produk dengan tag [PRODUK] dan [/PRODUK]**.
    - kisaran harga produk dalam Rp
    - Sebutkan zat aktif utama
    - Jelaskan singkat kenapa produk itu cocok dengan kondisi kulit {pred_label}
@@ -209,6 +213,8 @@ Tugasmu:
 Format keluaran:
 - Daftar poin untuk zat aktif
 - Daftar poin untuk produk skincare
+- Nama Produk: [PRODUK]Paula's Choice Clinical 0.3% Retinol + 2% Bakuchiol Treatment[/PRODUK]
+- Zat Aktif Utama: Retinol 0.3%, Bakuchiol 2%
 - Penutup berupa disclaimer singkat
 """
 
@@ -226,6 +232,31 @@ Tugasmu:
 4. Jika gambar tidak valid (bukan wajah manusia), jawab **hanya**: "TIDAK VALID - bukan wajah manusia."
 5. Jangan tambahkan penjelasan lain. Jawaban harus singkat dan tegas.
 """
+
+#search link produk
+def get_real_product_link(product_name: str):
+    """
+    Cari link e-commerce resmi menggunakan Google Custom Search API.
+    """
+    api_key = os.getenv("GOOGLE_SEARCH_API_KEY")
+    cx = os.getenv("GOOGLE_SEARCH_CX")
+    if not api_key or not cx:
+        return None
+
+    query = urllib.parse.quote(
+        f"{product_name} site:sociolla.com OR site:tokopedia.com OR site:shopee.co.id OR site:lazada.co.id OR site:watsons.co.id"
+    )
+    url = f"https://www.googleapis.com/customsearch/v1?q={query}&key={api_key}&cx={cx}"
+
+    try:
+        resp = requests.get(url, timeout=5)
+        data = resp.json()
+        if "items" in data and len(data["items"]) > 0:
+            return data["items"][0]["link"]  # ambil hasil teratas
+    except Exception as e:
+        print(f"[GoogleSearchAPI] Error: {e}")
+    return None
+
 
 # Connect to MongoDB Atlas
 client = MongoClient(MONGO_URI)
@@ -326,6 +357,28 @@ def index():
                 prompt2 = build_recommendation_prompt(pred_label)
                 resp2 = llm_client.generate_content(prompt2)
                 recommendation_text = getattr(resp2, "text", None) or str(resp2)
+
+                # 🔍 Cari link nyata dari Google Search API
+                product_names = re.findall(r"\[PRODUK\](.*?)\[/PRODUK\]", recommendation_text)
+                
+                for name in product_names:
+                    real_link = get_real_product_link(name)
+                    
+                    # Tag asli yang akan diganti, contoh: "[PRODUK]Nama Produk[/PRODUK]"
+                    original_tagged_string = f"[PRODUK]{name}[/PRODUK]"
+    
+                    if real_link:
+                        # Jika link ditemukan, ganti tag dengan Markdown link yang dicetak tebal
+                        replacement = f"**[{name}]({real_link}){{: target='_blank' }}**"
+                    else:
+                        # Jika link tidak ditemukan, hapus tag dan hanya cetak tebal nama produknya
+                        replacement = f"**{name}**"
+        
+                    recommendation_text = recommendation_text.replace(original_tagged_string, replacement)
+
+                # Ubah ke format HTML agar hyperlink aktif di template
+                recommendation_text = markdown.markdown(recommendation_text, extensions=["extra"])
+
 
                 # Format agar rapi di HTML
                 explanation_text = markdown.markdown(explanation_text, extensions=["extra"])
@@ -430,6 +483,12 @@ def test_db():
         return f"Terhubung ke MongoDB Atlas ✅ (total {count} dokumen)"
     except Exception as e:
         return f"Gagal konek MongoDB ❌: {e}"
+    
+@app.route("/test-search/<product>")
+def test_search(product):
+    link = get_real_product_link(product)
+    return link or "Tidak ditemukan link relevan"
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

@@ -213,6 +213,21 @@ a:hover {
   text-decoration: underline;
 }
 
+/* === Link di dalam rekomendasi dan penjelasan === */
+.recommendation a,
+.explanation a {
+  color: #ca8e83; /* warna krem kecoklatan khas tema */
+  font-weight: 600;
+  text-decoration: underline; /* supaya terlihat jelas */
+  transition: color 0.3s ease;
+}
+
+.recommendation a:hover,
+.explanation a:hover {
+  color: #8b5e52; /* warna lebih gelap saat hover */
+  text-decoration: none;
+}
+
 /* Tombol scan baru */
 .scan-new-container {
   display: flex;
