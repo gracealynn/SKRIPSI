@@ -37,7 +37,12 @@ except Exception:
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_PATH = BASE_DIR / "resnetrms.h5"   # ganti sesuai nama model
 UPLOAD_FOLDER = BASE_DIR / "static" / "uploads"
-UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
+try:
+    UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
+    LOCAL_SAVE_ENABLED = True
+except Exception:
+    LOCAL_SAVE_ENABLED = False
+
 
 ALLOWED_EXT = {".jpg", ".jpeg", ".png"}
 TARGET_SIZE = (224, 224)
@@ -336,13 +341,19 @@ def index():
         overlay_save = UPLOAD_FOLDER / f"{base}_overlay.jpg"
         overlay_llm_save = UPLOAD_FOLDER / f"{base}_overlay_llm.jpg"
 
-        img_orig.save(str(orig_save))
+        # Buat heatmap RGB untuk disimpan / dikonversi ke base64
         heat_uint8 = np.uint8(255 * heatmap_resized)
         heat_col_bgr = cv2.applyColorMap(heat_uint8, cv2.COLORMAP_JET)
         heat_col_rgb = cv2.cvtColor(heat_col_bgr, cv2.COLOR_BGR2RGB)
-        Image.fromarray(heat_col_rgb).save(str(heat_save))
-        Image.fromarray(overlay_rgb).save(str(overlay_save))
-        save_resized_for_llm(overlay_rgb, overlay_llm_save)
+
+        # ✅ Simpan ke local hanya jika environment mengizinkan
+        if LOCAL_SAVE_ENABLED:
+            img_orig.save(str(orig_save))
+            Image.fromarray(heat_col_rgb).save(str(heat_save))
+            Image.fromarray(overlay_rgb).save(str(overlay_save))
+            save_resized_for_llm(overlay_rgb, overlay_llm_save)
+        else:
+            logger.warning("⚠️ Penyimpanan lokal dinonaktifkan — hanya menyimpan ke MongoDB.")
 
         # ------------------ LLM EXPLANATION + RECOMMENDATION ------------------
         explanation_text = None
