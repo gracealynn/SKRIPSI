@@ -497,12 +497,17 @@ footer {
   .footer-container {
     flex-direction: column;
     text-align: center;
-    align-items: center;
+  }
+
+  .footer-left,
+  .footer-right {
+    max-width: 100% !important; /* Hapus batasan 60% */
+    width: 100% !important;
+    text-align: center !important; /* Paksa teks & logo rata tengah */
   }
 
   .footer-right {
-    text-align: center;
-    margin-top: 20px;
+    margin-top: 30px;
   }
 
   .social-icons {
@@ -549,6 +554,39 @@ footer {
   .tutorial-steps {
     flex-direction: column;
     align-items: center;
+  }
+}
+
+/* =================================
+   PERBAIKAN TAMPILAN MOBILE
+   ================================= */
+@media (max-width: 768px) {
+
+  /* Mengurangi padding di container slider utama */
+  .problems .swiper {
+    padding: 0 30px; /* Kurangi padding dari 60px menjadi 30px */
+  }
+
+  /* Dekatkan panah ke tepi di HP */
+  .swiper-button-prev {
+    left: 5px !important;
+  }
+  .swiper-button-next {
+    right: 5px !important;
+  }
+
+  /* Ini bagian terpenting:
+    Ubah lebar card dari 320px menjadi persentase 
+    agar fleksibel di semua ukuran HP
+  */
+  .problems .card {
+    width: 85% !important; /* Gunakan 85% dari lebar container */
+    min-height: auto;      /* Biarkan tingginya menyesuaikan konten */
+  }
+
+  .problems .card-body {
+    font-size: 15px; /* Sedikit kecilkan font di HP agar rapi */
+    padding: 15px;
   }
 }
 

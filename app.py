@@ -214,6 +214,7 @@ Tugasmu:
 3. Hindari kalimat pembuka seperti 'Halo', 'Tentu saja', atau ekspresi percakapan lainnya.
 4. Gunakan bahasa formal dan to the point.
 5. Ingatkan bahwa ini hanya saran umum berbasis AI, bukan diagnosis medis.
+6. Gunakan Markdown **tanda bintang ganda** (contoh: **Teks Ini**) untuk semua teks yang perlu ditebalkan. Jangan gunakan tanda bintang tunggal (*).
 
 Format keluaran:
 - Daftar poin untuk zat aktif
