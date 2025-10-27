@@ -84,8 +84,6 @@ logger.info("Model loaded.")
 # ---------------- Helper functions ----------------
 def allowed_file(filename: str):
     return Path(filename).suffix.lower() in ALLOWED_EXT
-
-def is_face_image(image_path):
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
     profile_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_profileface.xml")
     
@@ -291,7 +289,6 @@ def index():
         file.save(str(save_path))
 
         # ------------------ VALIDASI GAMBAR ------------------
-        opencv_valid = is_face_image(str(save_path))
         llm_valid = False
         llm_feedback = "LLM tidak dijalankan."
 
@@ -311,9 +308,9 @@ def index():
                 llm_feedback = f"LLM gagal validasi input: {e}"
 
         # Gabungkan hasil dengan operasi AND
-        if not (opencv_valid and llm_valid):
-            error_message = "❌ Gambar tidak valid. Harap unggah foto wajah manusia (boleh sebagian)."
-            print(f"[VALIDATION FAIL] OpenCV={opencv_valid}, LLM={llm_feedback}")
+        if not llm_valid:
+            error_message = "❌ Gambar tidak valid. Harap unggah gambar wajah manusia (Full face)."
+            print(f"[VALIDATION FAIL] LLM={llm_feedback}")
             return render_template("index.html", error=error_message)
 
         # ------------------ LANJUTKAN PREDIKSI ------------------

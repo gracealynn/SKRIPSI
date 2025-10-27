@@ -403,11 +403,15 @@ section {
   margin: 0 20px;
 }
 
-.disclaimer {
-  text-align: center;
-  font-size: 12px;
-  margin-top: 30px;
-  color: #888;
+.alert-pink {
+  color: #5c4b4b; /* Warna teks */
+  background-color: #ca938869; /* Background pink muda */
+  border-color: #c5796a; /* Border pink muda */
+}
+
+/* Jika Anda ingin ikonnya juga sedikit lebih pink */
+.alert-pink .fas.fa-info-circle {
+  color: #c5796a; /* Warna ikon */
 }
 
 /* Footer */
@@ -561,7 +565,6 @@ footer {
    PERBAIKAN TAMPILAN MOBILE
    ================================= */
 @media (max-width: 768px) {
-
   /* Mengurangi padding di container slider utama */
   .problems .swiper {
     padding: 0 30px; /* Kurangi padding dari 60px menjadi 30px */
@@ -581,7 +584,7 @@ footer {
   */
   .problems .card {
     width: 85% !important; /* Gunakan 85% dari lebar container */
-    min-height: auto;      /* Biarkan tingginya menyesuaikan konten */
+    min-height: auto; /* Biarkan tingginya menyesuaikan konten */
   }
 
   .problems .card-body {
