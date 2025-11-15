@@ -205,6 +205,7 @@ Hasil prediksi model: {pred_label}.
 Tugasmu:
 1. Rekomendasikan **zat aktif skincare** yang sesuai untuk kondisi kulit {pred_label}.
 2. Berikan contoh **produk skincare nyata** (brand indonesia dan global) yang mengandung zat aktif tersebut.
+   - **PENTING: Dasari rekomendasi produk ini dari sumber terpercaya yang diakui secara dermatologis, seperti Halodoc, Hello Sehat, atau ulasan ahli.**
    - Sebutkan nama produk. **PENTING: WAJIB bungkus nama produk dengan tag [PRODUK] dan [/PRODUK]**.
    - kisaran harga produk dalam Rp
    - Sebutkan zat aktif utama
