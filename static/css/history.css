@@ -102,6 +102,14 @@ B
   margin-bottom: 5px;
 }
 
+.history-timestamp {
+  font-size: 14px;
+  color: #5c4b4b;
+  font-weight: 500;
+  margin-top: -5px;
+  margin-bottom: 10px;
+}
+
 .label {
   display: inline-block;
   background-color: #f3d8cd;

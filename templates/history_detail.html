@@ -30,6 +30,11 @@
     <div class="container">
       <div class="hero"></div>
       <h2>Detail Analisis</h2>
+
+      {% if data.display_time %}
+         <p class="detail-timestamp">Analisis dilakukan pada: {{data.display_time}}</p>
+      {% endif %}
+
       <h3>{{ data.prediction }}</h3>
 
       <div class="gradcam-section">

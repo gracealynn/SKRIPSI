@@ -72,7 +72,7 @@
                   class="form-control search-bar"
                   type="search"
                   name="q"
-                  placeholder="Cari pengguna, label, atau rekomendasi..."
+                  placeholder="Cari nama, username, label, atau rekomendasi..."
                   aria-label="Search"
                 />
                 <button class="btn btn-search" type="submit">Cari</button>
@@ -93,7 +93,9 @@
         class="history-card-link"
       >
         <div class="history-card">
-          <h5 class="user-name">{{ h.user_name }}</h5>
+          <h5 class="user-name">{{ h.user_tag }}</h5>
+          <p class="user-name">{{h.user_name}}</p>
+          <p class="history-timestamp">{{h.display_time}}</p>
           <p class="label">{{ h.prediction }}</p>
 
           <div class="images">

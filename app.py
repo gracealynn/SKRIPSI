@@ -284,6 +284,21 @@ def index():
         if not allowed_file(file.filename):
             return render_template("index.html", error="File harus jpg/jpeg/png.")
 
+        nama_user = request.form.get("nama", "Anonim").strip()
+        user_tag = request.form.get("user_tag", "").strip()
+
+        if user_tag:
+                existing_tag = collection.find_one({"user_tag": user_tag})
+
+                if existing_tag:
+                        db_name = existing_tag.get("user_name", "").lower()
+                        input_name = nama_user.lower()
+
+                        if db_name != input_name:
+                                error_msg = f"Tag '{user_tag}' sudah digunakan oleh pengguna lain. Harap ganti tag."
+                                return render_template("index.html", error=error_msg)
+
+
         filename = secure_filename(file.filename)
         base, _ = os.path.splitext(filename)
         save_path = UPLOAD_FOLDER / filename
@@ -412,6 +427,7 @@ def index():
 
             doc = {
                 "user_name": request.form.get("nama", "Anonim"),
+		"user_tag": user_tag,
                 "prediction": pred_label,
                 "original_b64": original_b64,
                 "heatmap_b64": heatmap_b64,
@@ -448,7 +464,8 @@ def history():
                 "$or": [
                     {"user_name": {"$regex": query, "$options": "i"}},
                     {"prediction": {"$regex": query, "$options": "i"}},
-                    {"recommendation": {"$regex": query, "$options": "i"}}
+                    {"recommendation": {"$regex": query, "$options": "i"}},
+		    {"user_tag": {"$regex": query, "$options": "i"}}
                 ]
             }).sort("created_at", -1))
         else:
@@ -456,6 +473,9 @@ def history():
 
         for h in histories:
             h["_id"] = str(h["_id"])  # ubah ObjectId ke string agar bisa dikirim ke template
+
+            if "created_at" in h:
+                h["display_time"] = h["created_at"].strftime("%d %B %Y")
 
     except Exception as e:
         histories = []
@@ -471,6 +491,10 @@ def history_detail(history_id):
             return render_template("history_detail.html", error="Data tidak ditemukan.")
 
         history_data["_id"] = str(history_data["_id"])
+
+        if "created_at" in history_data:
+            history_data["display_time"] = history_data["created_at"].strftime("%d %B %Y")
+
         return render_template("history_detail.html", data=history_data)
     except Exception as e:
         logger.error(f"Gagal mengambil detail history: {e}")
