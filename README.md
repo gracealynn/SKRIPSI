@@ -10,6 +10,7 @@ Aplikasi ini adalah sistem berbasis web yang dibangun untuk mendeteksi dan mengk
 
 Sistem ini menggunakan arsitektur **ResNet** (`resnetrms.h5`) untuk mengenali pola pada citra kulit dan memberikan prediksi klasifikasi penyakit. Aplikasi ini dirancang agar mudah digunakan oleh pengguna awam melalui antarmuka web yang sederhana.
 
+![Tampilan Aplikasi](tampilan.png)
 ---
 
 ## ⚙️ Cara Instalasi
